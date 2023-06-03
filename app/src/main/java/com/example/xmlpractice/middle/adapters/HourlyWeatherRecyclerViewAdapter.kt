@@ -47,6 +47,6 @@ class WeatherSmallBoxHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             val weatherType = WeatherType.fromWMO(data.weatherCode[position])
             icon.setImageResource(weatherType.iconRes)
             cardLayout.setBackgroundColor(weatherType.backgroundColor)
-        }
+        }//test
     }
 }
