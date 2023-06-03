@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="partly_cloudy">#A2AEE8</color>
+    <color name="clear_sky">#A6EDFF</color>
+    <color name="mainly_clear">#BEE3FF</color>
+    <color name="overcast">#5F5F5F</color>
+</resources>
