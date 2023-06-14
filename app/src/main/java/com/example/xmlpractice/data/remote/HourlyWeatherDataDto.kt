@@ -7,5 +7,5 @@ data class HourlyWeatherDataDto(
     @SerializedName("temperature_2m")
     val temperatures: List<Double>,
     @SerializedName("weathercode")
-    val weatherCode: List<Int>
+    val weatherCodes: List<Int>
 )

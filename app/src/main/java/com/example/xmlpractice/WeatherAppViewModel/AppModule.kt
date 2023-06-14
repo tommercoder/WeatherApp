@@ -1,4 +1,4 @@
-package com.example.xmlpractice.middle
+package com.example.xmlpractice.WeatherAppViewModel
 
 import com.example.xmlpractice.data.remote.WeatherAPI
 import com.google.android.datatransport.runtime.dagger.Module
@@ -9,7 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 //@InstallIn(SingletonComponent::class) //deal with singleton somehow
 object AppModule {
-
     @Provides
     fun getWeatherApi(): WeatherAPI {
         return Retrofit.Builder()

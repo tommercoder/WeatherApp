@@ -1,20 +1,18 @@
-package com.example.xmlpractice.middle.adapters
+package com.example.xmlpractice.presentation.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.xmlpractice.R
 import com.example.xmlpractice.data.helpers.TimeFormatter
 import com.example.xmlpractice.data.remote.HourlyWeatherDataDto
 import com.example.xmlpractice.data.remote.WeatherDto
-import com.example.xmlpractice.middle.WeatherType
-
+import com.example.xmlpractice.WeatherAppViewModel.WeatherType
+//must be reworked to local types
 class HourlyWeatherRecyclerViewAdapter(val data: WeatherDto) : //use HourlyDto instead?
     RecyclerView.Adapter<WeatherSmallBoxHolder>() {
 
@@ -44,7 +42,7 @@ class WeatherSmallBoxHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             //start showing from current hour somehow?
             hour.text = TimeFormatter.getFormattedTimeForHourlyCard(data.time[position])
             temperature.text = data.temperatures[position].toString()
-            val weatherType = WeatherType.fromWMO(data.weatherCode[position])
+            val weatherType = WeatherType.fromWMO(data.weatherCodes[position])
             icon.setImageResource(weatherType.iconRes)
             cardLayout.setBackgroundColor(weatherType.backgroundColor)
         }//test

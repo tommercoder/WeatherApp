@@ -1,6 +1,5 @@
-package com.example.xmlpractice.middle
+package com.example.xmlpractice.WeatherAppViewModel
 
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.example.xmlpractice.R
 
