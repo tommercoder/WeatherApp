@@ -18,6 +18,7 @@ import com.example.xmlpractice.WeatherAppViewModel.IWeatherService
 import com.example.xmlpractice.WeatherAppViewModel.State
 import com.example.xmlpractice.WeatherAppViewModel.Weather
 import com.example.xmlpractice.WeatherAppViewModel.WeatherDataCurrent
+import com.example.xmlpractice.WeatherAppViewModel.WeatherDataHourly
 import com.example.xmlpractice.WeatherAppViewModel.WeatherDataToday
 import com.example.xmlpractice.WeatherAppViewModel.WeatherService
 import com.example.xmlpractice.WeatherAppViewModel.WeatherStateListener
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity(), WeatherStateListener {
 //        }
     }
 
-    override fun onWeatherStateChanged(state: State) {
+        override fun onWeatherStateChanged(state: State) {
         when (state) {
             State.LOADING -> {
                 runOnUiThread {
@@ -61,19 +62,19 @@ class MainActivity : AppCompatActivity(), WeatherStateListener {
                 }
             }
             State.SUCCESS -> {
-
                 val weather = data.weather
                 val hourly = weather?.hourly
                 val todays = weather?.today
                 val current = weather?.current
 
-
                 runOnUiThread {
                     binding.progressBar.visibility = View.GONE
                     binding.wholeLayout.visibility = View.VISIBLE
 
+                    binding.timeZone.text = weather?.timezone!!.timezone
                     fillCurrentWeather(current!!)
                     fillTodaysData(todays!!)
+                    generateHourlyForecastCards(binding.hourlyForecast, hourly!!)
                 }
             }
             State.ERROR -> {
@@ -94,13 +95,14 @@ class MainActivity : AppCompatActivity(), WeatherStateListener {
         binding.maxTemperature.text = daily.max_temperature
         binding.minTemperature.text = daily.min_temperature
     }
-//    private fun generateHourlyForecastCards(recyclerView: RecyclerView, weatherDto: WeatherDto) {
-//        recyclerView.apply {
-//            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false);
-//            adapter = HourlyWeatherRecyclerViewAdapter(weatherDto)
-//        }
-//        recyclerView.visibility = View.VISIBLE
-//    }
+
+    private fun generateHourlyForecastCards(recyclerView: RecyclerView, hourly: WeatherDataHourly) {
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false);
+            adapter = HourlyWeatherRecyclerViewAdapter(hourly)
+        }
+        recyclerView.visibility = View.VISIBLE
+    }
 //
 //
 //    private fun fillTodaysData(daily : DailyWeatherDataDto) {

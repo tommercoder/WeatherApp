@@ -8,12 +8,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.xmlpractice.R
+import com.example.xmlpractice.WeatherAppViewModel.WeatherDataHourly
 import com.example.xmlpractice.data.helpers.TimeFormatter
-import com.example.xmlpractice.data.remote.HourlyWeatherDataDto
-import com.example.xmlpractice.data.remote.WeatherDto
 import com.example.xmlpractice.WeatherAppViewModel.WeatherType
 //must be reworked to local types
-class HourlyWeatherRecyclerViewAdapter(val data: WeatherDto) : //use HourlyDto instead?
+class HourlyWeatherRecyclerViewAdapter(val data: WeatherDataHourly) : //use HourlyDto instead?
     RecyclerView.Adapter<WeatherSmallBoxHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherSmallBoxHolder {
@@ -22,11 +21,11 @@ class HourlyWeatherRecyclerViewAdapter(val data: WeatherDto) : //use HourlyDto i
     }
 
     override fun getItemCount(): Int {
-        return data.hourlyWeatherData.temperatures.count() // looks bad
+        return 24 // hours
     }
 
     override fun onBindViewHolder(holder: WeatherSmallBoxHolder, position: Int) {
-        return holder.bindView(data.hourlyWeatherData, position)
+        return holder.bindView(data, position)
     }
 }
 
@@ -37,14 +36,13 @@ class WeatherSmallBoxHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private val temperature: TextView = itemView.findViewById(R.id.temperature)
     private val cardLayout: LinearLayout = itemView.findViewById(R.id.card)
 
-    fun bindView(data: HourlyWeatherDataDto?, position: Int) {
-        data?.let {//what is let?
-            //start showing from current hour somehow?
-            hour.text = TimeFormatter.getFormattedTimeForHourlyCard(data.time[position])
-            temperature.text = data.temperatures[position].toString()
-            val weatherType = WeatherType.fromWMO(data.weatherCodes[position])
+    fun bindView(data: WeatherDataHourly?, position: Int) {
+        data?.let {
+            hour.text = TimeFormatter.getFormattedTimeForHourlyCard(data.hours[position])//move to mapper
+            temperature.text = data.temperatures[position]
+            val weatherType = WeatherType.fromWMO(data.weather_codes[position])
             icon.setImageResource(weatherType.iconRes)
             cardLayout.setBackgroundColor(weatherType.backgroundColor)
-        }//test
+        }
     }
 }

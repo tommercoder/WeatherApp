@@ -12,4 +12,10 @@ object TimeFormatter {
     fun getFormattedTimeForHourlyCard(to_format: String) : String {
         return LocalDateTime.parse(to_format, formatter).toLocalTime().toString()
     }
+
+    @Provides
+    fun getHour(time: String) : Int {
+        //return times.map {  }
+        return LocalDateTime.parse(time, formatter).hour
+    }
 }

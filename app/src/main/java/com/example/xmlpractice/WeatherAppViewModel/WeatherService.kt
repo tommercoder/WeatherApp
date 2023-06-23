@@ -34,7 +34,7 @@ class WeatherService : IWeatherService {
                 weather = weather.copy(
                     current_state = State.ERROR
                 )
-                notifyWeatherStateChanged(weather.current_state!!)
+                notifyWeatherStateChanged(weather.current_state!!)//&&&&&&&&&&&&&&?????????????
                 Log.d("SERVICE", "ERROR")
             }
 

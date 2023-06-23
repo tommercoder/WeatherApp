@@ -8,6 +8,7 @@ data class WeatherDataHolder(
 )
 
 data class WeatherDataHourly(
+    val hours : List<String>,
     val temperatures : List<String>,
     val weather_codes : List<Int>
 )
