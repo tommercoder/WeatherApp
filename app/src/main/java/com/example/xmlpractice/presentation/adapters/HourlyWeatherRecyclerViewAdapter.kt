@@ -34,15 +34,15 @@ class WeatherSmallBoxHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private val hour: TextView = itemView.findViewById(R.id.hour)
     private val icon: ImageView = itemView.findViewById(R.id.icon)
     private val temperature: TextView = itemView.findViewById(R.id.temperature)
-    private val cardLayout: LinearLayout = itemView.findViewById(R.id.card)
-
+    //private val cardLayout: LinearLayout = itemView.findViewById(R.id.card)
+    //todo: highlight last selected? show some additional data for the selected element?
     fun bindView(data: WeatherDataHourly?, position: Int) {
         data?.let {
             hour.text = TimeFormatter.getFormattedTimeForHourlyCard(data.hours[position])//move to mapper
             temperature.text = data.temperatures[position]
             val weatherType = WeatherType.fromWMO(data.weather_codes[position])
             icon.setImageResource(weatherType.iconRes)
-            cardLayout.setBackgroundColor(weatherType.backgroundColor)
+            //cardLayout.setBackgroundColor("#00ffffff")
         }
     }
 }

@@ -3,12 +3,12 @@ package com.example.xmlpractice.WeatherAppViewModel
 import androidx.annotation.DrawableRes
 import com.example.xmlpractice.R
 
-sealed class WeatherType(
+sealed class WeatherType( //what's sealed?
     val weatherDesc: String,
     @DrawableRes val iconRes: Int,
     @DrawableRes val backgroundColor: Int
 ) {
-    object ClearSky : WeatherType(
+    object ClearSky : WeatherType( // why object?
         weatherDesc = "Clear sky",
         iconRes = R.drawable.clear_sky,
         backgroundColor = R.color.clear_sky

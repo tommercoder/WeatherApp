@@ -1,10 +1,10 @@
 package com.example.xmlpractice.WeatherAppViewModel
 
 data class WeatherDataHolder(
-    val hourly: WeatherDataHourly?,
-    val today: WeatherDataToday?,
-    val current: WeatherDataCurrent?,
-    val timezone: WeatherDataTimezone?
+    val data_hourly: WeatherDataHourly?,
+    val data_today: WeatherDataToday?,
+    val data_current: WeatherDataCurrent?,
+    val data_timezone: WeatherDataTimezone?
 )
 
 data class WeatherDataHourly(

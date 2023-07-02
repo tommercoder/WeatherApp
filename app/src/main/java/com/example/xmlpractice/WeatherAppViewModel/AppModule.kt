@@ -6,7 +6,7 @@ import com.google.android.datatransport.runtime.dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-@Module
+@Module //why module?
 //@InstallIn(SingletonComponent::class) //deal with singleton somehow
 object AppModule {
     @Provides

@@ -6,4 +6,5 @@
     <color name="clear_sky">#A6EDFF</color>
     <color name="mainly_clear">#BEE3FF</color>
     <color name="overcast">#5F5F5F</color>
+    <color name="transparent">#00ffffff</color>
 </resources>
