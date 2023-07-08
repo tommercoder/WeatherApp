@@ -18,6 +18,10 @@ import com.example.xmlpractice.WeatherAppViewModel.WeatherService
 import com.example.xmlpractice.WeatherAppViewModel.WeatherStateListener
 import com.example.xmlpractice.WeatherAppViewModel.WeatherType
 
+
+//todo 1) Write a service that allows to gather data from API only if data location permission was provided
+//todo 2) Create a new daily RecyclerView and allow to switch between them by buttons
+//todo 3) Find a better images instead of a solid color on the background
 class MainActivity : AppCompatActivity(), WeatherStateListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -30,9 +34,13 @@ class MainActivity : AppCompatActivity(), WeatherStateListener {
         setContentView(binding.root)
 
         service.setWeatherStateListener(this) // this activity listens to state of the API data
-        data = service.getWeatherData() // initial API request
+        tryRequestData() // initial API request
     }
-
+//todo add onResume and check whether location is still granted, do the same on every start
+//if location access is granted then try to retrieve api data
+//otherwise show the grant location permission button
+//if api data is retrieved show everything
+//otherwise show the reload button
     override fun onWeatherStateChanged(state: State) {
         when (state) {
             State.LOADING -> {
@@ -53,7 +61,8 @@ class MainActivity : AppCompatActivity(), WeatherStateListener {
                     binding.wholeLayout.visibility = View.VISIBLE
 
                     binding.timeZone.text = weather.data_timezone!!.timezone
-                    binding.forecastText.text = weather.data_timezone!!.timezone + " " + binding.forecastText.text
+                    binding.forecastText.text =
+                        weather.data_timezone!!.timezone + " " + binding.forecastText.text
                     fillCurrentWeather(current)
                     fillTodaysData(todays)
                     generateHourlyForecastCards(binding.hourlyForecast, hourly)
@@ -92,5 +101,9 @@ class MainActivity : AppCompatActivity(), WeatherStateListener {
             adapter = HourlyWeatherRecyclerViewAdapter(hourly)
         }
         recyclerView.visibility = View.VISIBLE
+    }
+
+    private fun tryRequestData() {
+        data = service.getWeatherData()
     }
 }

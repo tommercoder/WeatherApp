@@ -10,6 +10,27 @@
     <!--    android:divider="@drawable/main_divider"-->
     <!--    android:showDividers="middle"-->
 
+    <!--Buttons visibility is handled in the activity-->
+    <Button
+        android:id="@+id/btnLocationPermission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Allow location usage"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/btnRequestWeatherData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Reload"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:visibility="invisible"/>
+
     <TextView
         android:id="@+id/timeZone"
         android:layout_width="wrap_content"
@@ -121,6 +142,8 @@
 
         </LinearLayout>
     </LinearLayout>
+
+
 
     <ProgressBar
         android:id="@+id/progressBar"

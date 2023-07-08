@@ -19,7 +19,7 @@ class WeatherService : IWeatherService {
         Log.d("SERVICE", "LOADING!")
 
         GlobalScope.launch(Dispatchers.IO) {
-            val response = API.getWeather()
+            val response = API.getWeather(52.52,13.41) //todo: this location must be handled by the location service which gets from the actual user location and then uses this service to gather api data
             if (response.isSuccessful) {
                 weather.weather = mapper.mapDTOsToWeatherData(response.body()!!) // we are sure that it's not null
                 weather.current_state = State.SUCCESS
