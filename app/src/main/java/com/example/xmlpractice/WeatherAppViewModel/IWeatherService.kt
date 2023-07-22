@@ -12,6 +12,6 @@ data class Weather(
 )
 
 interface IWeatherService {
-    fun getWeatherData(): Weather
+    fun getWeatherData(lat : Double, long : Double): Weather
     fun setWeatherStateListener(listener: WeatherStateListener)
 }

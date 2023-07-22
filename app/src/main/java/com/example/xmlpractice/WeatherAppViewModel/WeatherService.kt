@@ -6,43 +6,40 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class WeatherService : IWeatherService {
+class WeatherService() : IWeatherService {
 
-    private var weather = Weather() // null
-    private lateinit var weatherStateListener: WeatherStateListener
-    private val mapper = WeatherTypesMapper()
-    private var API = AppModule.getWeatherApi()
+    private val m_weather = Weather() // null
+    private val m_mapper = WeatherTypesMapper()
+    private val m_API = AppModule.getWeatherApi()
+    private lateinit var m_weatherStateListener: WeatherStateListener
 
-    override fun getWeatherData(): Weather {
-        weather.current_state = State.LOADING
-        notifyWeatherStateChanged(weather.current_state!!)
-        Log.d("SERVICE", "LOADING!")
+    override fun getWeatherData(lat : Double, long : Double): Weather { // do I need another approach with lat/long?
+        m_weather.current_state = State.LOADING
+        notifyWeatherStateChanged(m_weather.current_state!!)
 
         GlobalScope.launch(Dispatchers.IO) {
-            val response = API.getWeather(52.52,13.41) //todo: this location must be handled by the location service which gets from the actual user location and then uses this service to gather api data
+            val response = m_API.getWeather(lat, long)
             if (response.isSuccessful) {
-                weather.weather = mapper.mapDTOsToWeatherData(response.body()!!) // we are sure that it's not null
-                weather.current_state = State.SUCCESS
+                m_weather.weather = m_mapper.mapDTOsToWeatherData(response.body()!!) // we are sure that it's not null
+                m_weather.current_state = State.SUCCESS
 
-                notifyWeatherStateChanged(weather.current_state!!)
-
-                Log.d("SERVICE", "SUCCESS!")
-            } else {
-                weather.current_state = State.ERROR
-                notifyWeatherStateChanged(weather.current_state!!)
-                Log.d("SERVICE", "ERROR!")
+                notifyWeatherStateChanged(m_weather.current_state!!)
+            }
+            else {
+                m_weather.current_state = State.ERROR
+                notifyWeatherStateChanged(m_weather.current_state!!)
             }
 
         }
-        return weather
+        return m_weather
     }
 
     override fun setWeatherStateListener(listener: WeatherStateListener) {
-        weatherStateListener = listener
+        m_weatherStateListener = listener
     }
 
     private fun notifyWeatherStateChanged(state: State) {
-        weatherStateListener.onWeatherStateChanged(state)
+        m_weatherStateListener.onWeatherStateChanged(state)
     }
 
 }
