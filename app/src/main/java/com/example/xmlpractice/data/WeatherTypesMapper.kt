@@ -1,13 +1,11 @@
 package com.example.xmlpractice.data
 
-import android.util.Log
 import com.example.xmlpractice.WeatherAppViewModel.Constants
 import com.example.xmlpractice.WeatherAppViewModel.WeatherDataCurrent
 import com.example.xmlpractice.WeatherAppViewModel.WeatherDataHolder
 import com.example.xmlpractice.WeatherAppViewModel.WeatherDataHourly
 import com.example.xmlpractice.WeatherAppViewModel.WeatherDataTimezone
 import com.example.xmlpractice.WeatherAppViewModel.WeatherDataToday
-import com.example.xmlpractice.data.helpers.TimeFormatter
 import com.example.xmlpractice.data.remote.CurrentWeatherDataDto
 import com.example.xmlpractice.data.remote.DailyWeatherDataDto
 import com.example.xmlpractice.data.remote.HourlyWeatherDataDto

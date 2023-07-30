@@ -1,5 +1,8 @@
 package com.example.xmlpractice.WeatherAppViewModel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+
 enum class State {
     LOADING,
     ERROR,
@@ -12,6 +15,7 @@ data class Weather(
 )
 
 interface IWeatherService {
-    fun getWeatherData(lat : Double, long : Double): Weather
-    fun setWeatherStateListener(listener: WeatherStateListener)
+    suspend fun getWeatherData(lat : Double, long : Double): Weather
+    fun getLiveData() : MutableLiveData<State?>
+    //fun setWeatherStateListener(listener: WeatherStateListener)
 }
