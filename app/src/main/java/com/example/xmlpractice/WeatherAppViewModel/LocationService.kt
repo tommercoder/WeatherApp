@@ -7,6 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 
+//check how this class works
 @ExperimentalCoroutinesApi
 class LocationService @Inject constructor(
     private val locationClient: FusedLocationProviderClient
