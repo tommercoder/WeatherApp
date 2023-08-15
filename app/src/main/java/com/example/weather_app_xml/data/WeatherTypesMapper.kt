@@ -1,15 +1,15 @@
-package com.example.xmlpractice.data
+package com.example.weather_app_xml.data
 
-import com.example.xmlpractice.WeatherAppViewModel.Constants
-import com.example.xmlpractice.WeatherAppViewModel.WeatherDataCurrent
-import com.example.xmlpractice.WeatherAppViewModel.WeatherDataHolder
-import com.example.xmlpractice.WeatherAppViewModel.WeatherDataHourly
-import com.example.xmlpractice.WeatherAppViewModel.WeatherDataTimezone
-import com.example.xmlpractice.WeatherAppViewModel.WeatherDataToday
-import com.example.xmlpractice.data.remote.CurrentWeatherDataDto
-import com.example.xmlpractice.data.remote.DailyWeatherDataDto
-import com.example.xmlpractice.data.remote.HourlyWeatherDataDto
-import com.example.xmlpractice.data.remote.WeatherDto
+import com.example.weather_app_xml.WeatherAppViewModel.Constants
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataCurrent
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHolder
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataTimezone
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataToday
+import com.example.weather_app_xml.data.remote.CurrentWeatherDataDto
+import com.example.weather_app_xml.data.remote.DailyWeatherDataDto
+import com.example.weather_app_xml.data.remote.HourlyWeatherDataDto
+import com.example.weather_app_xml.data.remote.WeatherDto
 import java.util.Calendar
 
 class WeatherTypesMapper {
@@ -24,7 +24,7 @@ class WeatherTypesMapper {
     }
 
     private fun doubleTemperaturesToString(temperatures: List<Double>): List<String> {
-        return temperatures.map { "${it.toInt()}${Constants.degreeSign}" } // maybe degree sign should be added somewhere else?
+        return temperatures.map { "${it.toInt()}${ Constants.degreeSign }" }
     }
 
     private fun mapHourly(hourlyFromAPI: HourlyWeatherDataDto): WeatherDataHourly {
@@ -33,7 +33,7 @@ class WeatherTypesMapper {
         val hoursApi = hourlyFromAPI.time
 
         val displayedHours: List<String> =
-            hoursApi.subList(currentHour, currentHour + Constants.dayHours + 1)//move to const
+            hoursApi.subList(currentHour, currentHour + Constants.dayHours + 1)
 
         return WeatherDataHourly(
             hours = displayedHours,

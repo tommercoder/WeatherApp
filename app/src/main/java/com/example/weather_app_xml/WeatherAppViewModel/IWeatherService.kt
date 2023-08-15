@@ -1,6 +1,5 @@
-package com.example.xmlpractice.WeatherAppViewModel
+package com.example.weather_app_xml.WeatherAppViewModel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 enum class State {
@@ -13,9 +12,8 @@ data class Weather(
     var weather: WeatherDataHolder? = null,
     var current_state: State? = State.ERROR
 )
-
+//this is singleton works with binds of hilt
 interface IWeatherService {
     suspend fun getWeatherData(lat : Double, long : Double): Weather
     fun getLiveData() : MutableLiveData<State?>
-    //fun setWeatherStateListener(listener: WeatherStateListener)
 }

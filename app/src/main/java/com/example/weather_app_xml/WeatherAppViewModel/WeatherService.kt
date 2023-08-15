@@ -1,10 +1,10 @@
-package com.example.xmlpractice.WeatherAppViewModel
+package com.example.weather_app_xml.WeatherAppViewModel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.xmlpractice.data.WeatherTypesMapper
-import com.example.xmlpractice.data.remote.WeatherAPI
+import com.example.weather_app_xml.data.WeatherTypesMapper
+import com.example.weather_app_xml.data.remote.WeatherAPI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,6 +45,7 @@ class WeatherService @Inject constructor(
                 }
             }
         }
+        Log.d("WeatherService", m_weather.current_state.toString())
         return m_weather
     }
 

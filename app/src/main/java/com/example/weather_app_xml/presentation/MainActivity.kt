@@ -1,4 +1,4 @@
-package com.example.xmlpractice.presentation
+package com.example.weather_app_xml.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,20 +7,20 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.xmlpractice.presentation.adapters.HourlyWeatherRecyclerViewAdapter
-import com.example.xmlpractice.databinding.ActivityMainBinding
-import com.example.xmlpractice.WeatherAppViewModel.WeatherDataCurrent
-import com.example.xmlpractice.WeatherAppViewModel.WeatherDataHourly
-import com.example.xmlpractice.WeatherAppViewModel.WeatherDataToday
-import com.example.xmlpractice.WeatherAppViewModel.WeatherType
+import com.example.weather_app_xml.presentation.adapters.HourlyWeatherRecyclerViewAdapter
+import com.example.weather_app_xml.databinding.ActivityMainBinding
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataCurrent
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataToday
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherType
 import android.Manifest
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.example.xmlpractice.WeatherAppViewModel.MainViewModel
-import com.example.xmlpractice.WeatherAppViewModel.State
-import com.example.xmlpractice.WeatherAppViewModel.Weather
+import com.example.weather_app_xml.WeatherAppViewModel.MainViewModel
+import com.example.weather_app_xml.WeatherAppViewModel.State
+import com.example.weather_app_xml.WeatherAppViewModel.Weather
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -44,15 +44,12 @@ class MainActivity : AppCompatActivity() {
                     if (isGranted) {
                         viewModel.loadWeather()
                         viewModel.liveData.observe(this, Observer { newState ->
-                            Log.d("TAG", "GOT HERE")
                             when (newState) {
                                 State.SUCCESS -> {
-                                    Log.d("TAG", "SUCCESS")
                                     setupUI(viewModel.weatherData!!) // must be != null here
                                 }
 
                                 State.ERROR -> {
-                                    Log.d("TAG", "ERROR")
                                     runOnUiThread {
                                         hideProgressBar()
                                     }

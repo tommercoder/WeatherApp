@@ -1,4 +1,4 @@
-package com.example.xmlpractice.presentation.adapters
+package com.example.weather_app_xml.presentation.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.xmlpractice.R
-import com.example.xmlpractice.WeatherAppViewModel.WeatherDataHourly
-import com.example.xmlpractice.data.helpers.TimeFormatter
-import com.example.xmlpractice.WeatherAppViewModel.WeatherType
+import com.example.weather_app_xml.R
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
+import com.example.weather_app_xml.data.helpers.TimeFormatter
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherType
 //must be reworked to local types
 class HourlyWeatherRecyclerViewAdapter(val data: WeatherDataHourly) : //use HourlyDto instead?
     RecyclerView.Adapter<WeatherSmallBoxHolder>() {

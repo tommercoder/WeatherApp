@@ -8,11 +8,11 @@ plugins {
 //apply plugin: 'kotlin-kapt'
 
 android {
-    namespace 'com.example.xmlpractice'
+    namespace 'com.example.weather_app_xml'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.xmlpractice"
+        applicationId "com.example.weather_app_xml"
         minSdk 28
         targetSdk 33
         versionCode 1

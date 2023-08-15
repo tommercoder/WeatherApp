@@ -1,4 +1,4 @@
-package com.example.xmlpractice.WeatherAppViewModel
+package com.example.weather_app_xml.WeatherAppViewModel
 
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat

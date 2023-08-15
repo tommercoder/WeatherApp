@@ -1,7 +1,7 @@
-package com.example.xmlpractice.WeatherAppViewModel
+package com.example.weather_app_xml.WeatherAppViewModel
 
 import androidx.annotation.DrawableRes
-import com.example.xmlpractice.R
+import com.example.weather_app_xml.R
 
 sealed class WeatherType( //what's sealed?
     val weatherDesc: String,

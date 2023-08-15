@@ -1,4 +1,4 @@
-package com.example.xmlpractice.WeatherAppViewModel
+package com.example.weather_app_xml.WeatherAppViewModel
 
 import android.util.Log
 import androidx.lifecycle.LiveData

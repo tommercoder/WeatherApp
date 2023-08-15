@@ -1,4 +1,4 @@
-package com.example.xmlpractice.data.remote
+package com.example.weather_app_xml.data.remote
 
 import retrofit2.Response
 import retrofit2.http.GET

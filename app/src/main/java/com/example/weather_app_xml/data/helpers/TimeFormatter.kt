@@ -1,6 +1,6 @@
-package com.example.xmlpractice.data.helpers
+package com.example.weather_app_xml.data.helpers
 
-import com.example.xmlpractice.WeatherAppViewModel.Constants
+import com.example.weather_app_xml.WeatherAppViewModel.Constants
 import com.google.android.datatransport.runtime.dagger.Module
 import com.google.android.datatransport.runtime.dagger.Provides
 import java.time.LocalDateTime

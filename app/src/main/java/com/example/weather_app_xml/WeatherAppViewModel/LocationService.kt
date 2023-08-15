@@ -1,4 +1,4 @@
-package com.example.xmlpractice.WeatherAppViewModel
+package com.example.weather_app_xml.WeatherAppViewModel
 
 import android.annotation.SuppressLint
 import android.location.Location

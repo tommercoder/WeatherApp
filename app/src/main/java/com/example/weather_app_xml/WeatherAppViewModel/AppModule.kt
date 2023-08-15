@@ -1,8 +1,8 @@
-package com.example.xmlpractice.WeatherAppViewModel
+package com.example.weather_app_xml.WeatherAppViewModel
 
 import android.app.Application
 import android.content.Context
-import com.example.xmlpractice.data.remote.WeatherAPI
+import com.example.weather_app_xml.data.remote.WeatherAPI
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import retrofit2.Retrofit

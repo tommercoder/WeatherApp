@@ -1,4 +1,4 @@
-package com.example.xmlpractice.WeatherAppViewModel
+package com.example.weather_app_xml.WeatherAppViewModel
 
 data class WeatherDataHolder(
     val data_hourly: WeatherDataHourly?,
