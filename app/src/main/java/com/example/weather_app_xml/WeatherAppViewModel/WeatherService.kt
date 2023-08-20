@@ -34,15 +34,16 @@ class WeatherService @Inject constructor(
                 m_weather.current_state = State.SUCCESS
 
                 //update
-                withContext(Dispatchers.Main) {
-                    liveData.value = m_weather.current_state
-                }
+//                withContext(Dispatchers.Main) {
+//                    liveData.value = m_weather.current_state
+//                }
             } else {
                 m_weather.current_state = State.ERROR
                 //update
-                withContext(Dispatchers.Main) {
-                    liveData.value = m_weather.current_state
-                }
+
+            }
+            withContext(Dispatchers.Main) {
+                liveData.value = m_weather.current_state
             }
         }
         Log.d("WeatherService", m_weather.current_state.toString())

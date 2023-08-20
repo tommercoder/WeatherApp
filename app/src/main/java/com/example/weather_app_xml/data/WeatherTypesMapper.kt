@@ -1,5 +1,6 @@
 package com.example.weather_app_xml.data
 
+import android.util.Log
 import com.example.weather_app_xml.WeatherAppViewModel.Constants
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataCurrent
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHolder
@@ -29,16 +30,17 @@ class WeatherTypesMapper {
 
     private fun mapHourly(hourlyFromAPI: HourlyWeatherDataDto): WeatherDataHourly {
         val calendar = Calendar.getInstance()
-        val currentHour = calendar.get(Calendar.HOUR)
+        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         val hoursApi = hourlyFromAPI.time
 
+        val hoursShift = currentHour + Constants.dayHours + 1
         val displayedHours: List<String> =
-            hoursApi.subList(currentHour, currentHour + Constants.dayHours + 1)
+            hoursApi.subList(currentHour, hoursShift)
 
         return WeatherDataHourly(
             hours = displayedHours,
-            temperatures = doubleTemperaturesToString(hourlyFromAPI.temperatures),
-            weather_codes = hourlyFromAPI.weatherCodes
+            temperatures = doubleTemperaturesToString(hourlyFromAPI.temperatures.subList(currentHour, hoursShift)),
+            weather_codes = hourlyFromAPI.weatherCodes.subList(currentHour, hoursShift)
         )
     }
 

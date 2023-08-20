@@ -4,9 +4,9 @@
     android:id="@+id/wholeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
-    android:paddingTop="50dp"
-    android:gravity="center_horizontal">
+    android:paddingTop="50dp">
     <!--    android:divider="@drawable/main_divider"-->
     <!--    android:showDividers="middle"-->
 
@@ -17,9 +17,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Allow location usage"
-        android:textSize="20sp"
         android:textColor="@color/white"
-        android:visibility="invisible"/>
+        android:textSize="20sp"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/btnRequestWeatherData"
@@ -27,9 +27,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Reload"
-        android:textSize="20sp"
         android:textColor="@color/white"
-        android:visibility="invisible"/>
+        android:textSize="20sp"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/timeZone"
@@ -43,25 +43,31 @@
         android:id="@+id/currentWeatherBigIcon"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center" />
 
     <!--temperature and description block-->
-        <TextView
-            android:id="@+id/currentTemperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:textSize="70sp" />
+    <TextView
+        android:id="@+id/currentTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/white"
+        android:textSize="70sp" />
 
-        <TextView
-            android:id="@+id/weatherDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/currentTemperature"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:textSize="25sp" />
+    <TextView
+        android:id="@+id/weatherDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/currentTemperature"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:textSize="25sp" />
 
     <!--High - Low temperatures-->
     <LinearLayout
@@ -101,7 +107,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            android:text="L:"
             android:textColor="@color/white"
             android:textSize="30sp" />
     </LinearLayout>
@@ -141,12 +146,5 @@
 
         </LinearLayout>
     </LinearLayout>
-
-
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
 
 </LinearLayout>
