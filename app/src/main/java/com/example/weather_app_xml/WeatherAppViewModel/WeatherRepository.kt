@@ -1,20 +1,18 @@
 package com.example.weather_app_xml.WeatherAppViewModel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.weather_app_xml.data.WeatherTypesMapper
 import com.example.weather_app_xml.data.remote.WeatherAPI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class WeatherService @Inject constructor(
+class WeatherRepository @Inject constructor(
     private val api: WeatherAPI
 ) : IWeatherService {
 

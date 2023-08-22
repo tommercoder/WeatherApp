@@ -16,5 +16,5 @@ abstract class LocationBinder {
 
     @Binds
     @Singleton
-    abstract fun bindLocationService(locationService: LocationService) : ILocationService
+    abstract fun bindLocationService(locationRepository: LocationRepository) : ILocationService
 }

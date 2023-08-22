@@ -10,7 +10,7 @@ enum class State {
 
 data class Weather(
     var weather: WeatherDataHolder? = null,
-    var current_state: State? = State.ERROR
+    var current_state: State? = State.LOADING
 )
 //this is singleton works with binds of hilt
 interface IWeatherService {

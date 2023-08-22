@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">weather_app_xml</string>
+    <string name="app_name">Weather</string>
+    <string name="reload_weather">Refresh with a swipe to load weather info again :)</string>
+    <string name="reload_location">To give a location permission please refresh with a swipe :)</string>
 </resources>

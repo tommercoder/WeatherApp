@@ -14,10 +14,15 @@ import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataToday
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherType
 import android.Manifest
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.example.weather_app_xml.R
 import com.example.weather_app_xml.WeatherAppViewModel.MainViewModel
 import com.example.weather_app_xml.WeatherAppViewModel.State
 import com.example.weather_app_xml.WeatherAppViewModel.Weather
@@ -28,71 +33,119 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var m_binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Array<String>>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         m_binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(m_binding.root)
 
-        val activityResultLauncher =
+        //todo: check what to do with the deny forever case!!!
+        //location permission result launcher
+        activityResultLauncher =
             registerForActivityResult(
                 ActivityResultContracts.RequestMultiplePermissions()
-            ) { permissions ->
-                // Handle Permission granted/rejected
-                permissions.entries.forEach {
-                    val permissionName = it.key
-                    val isGranted = it.value
-                    if (isGranted) {
-                        viewModel.loadWeather()
-                        viewModel.liveData.observe(this, Observer { newState ->
-                            when (newState) {
-                                State.SUCCESS -> {
-                                    setupUI(viewModel.weatherData!!) // must be != null here
-                                }
-
-                                State.ERROR -> {
-                                    runOnUiThread {
-                                        hideProgressBar()
-                                    }
-                                    //todo: show the reload button if location sharing is accepted but not data could be retreived
-                                }
-
-                                State.LOADING -> {
-                                    runOnUiThread {
-                                        showProgressBar() // check if works
-                                    }
-                                }
-
-                                else -> {
-                                    //mustn't happen
-                                }
-                            }
-                        })
-                    } else {
-                        //todo: show the button to ask again for location
-                    }
+            ) {
+                if (hasLocationPermissions()) {
+                    viewModel.loadWeather()
+                } else {
+                    showInfoText(R.string.reload_location)
                 }
             }
 
-        activityResultLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+        //observe the activity swipe to refresh
+        m_binding.refreshLayout.setOnRefreshListener {
+            if (hasLocationPermissions()) {
+                viewModel.loadWeather()
+            } else {
+                requestLocationPermissions()
+            }
+
+            m_binding.refreshLayout.isRefreshing = false // stop the refreshing
+        }
+
+        //observe the change of the API request state for current location
+        viewModel.liveData.observe(this, Observer { newState ->
+            when (newState) {
+                State.SUCCESS -> {
+                    hideProgressBar()
+                    hideInfoText()
+                    setupUI(viewModel.weatherData!!) // must be != null here
+                }
+
+                State.ERROR -> {
+                    hideProgressBar()
+                    showInfoText(R.string.reload_weather) //todo: fix the crash!!!
+                }
+
+                State.LOADING -> {
+                    hideInfoText()
+                    //if (!m_binding.refreshLayout.isVisible) { //prevent progress bar visibility when everything is visible
+                        showProgressBar()
+                   // }
+                }
+
+                else -> {
+                    //mustn't happen
+                }
+            }
+        })
+
+        requestLocationPermissions()
+    }
+
+    private fun hasLocationPermissions(): Boolean {
+        val fineLocationPermission = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
         )
 
+        val coarseLocationPermission = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+
+        return fineLocationPermission == PackageManager.PERMISSION_GRANTED &&
+                coarseLocationPermission == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestLocationPermissions() {
+        hideProgressBar()
+        hideInfoText()
+        if (::activityResultLauncher.isInitialized) {
+            activityResultLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                )
+            )
+        }
     }
 
     private fun showProgressBar() {
         runOnUiThread {
-            hideLayout()
+            //hideLayout()
             m_binding.progressBar.visibility = View.VISIBLE
         }
     }
 
     private fun hideProgressBar() {
         runOnUiThread {
-            showLayout()
+            //showLayout()
             m_binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun showInfoText(id: Int) {
+        runOnUiThread {
+            m_binding.infoText.setText(resources.getString(id))
+            m_binding.infoText.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideInfoText() {
+        runOnUiThread {
+            m_binding.infoText.visibility = View.GONE
         }
     }
 
@@ -103,7 +156,7 @@ class MainActivity : AppCompatActivity() {
         val current = info?.data_current!!
 
         runOnUiThread {
-            m_binding.progressBar.visibility = View.GONE
+            hideProgressBar()
             showLayout()
 
             m_binding.timeZone.text = info.data_timezone!!.timezone
@@ -122,7 +175,7 @@ class MainActivity : AppCompatActivity() {
         val weatherType = WeatherType.fromWMO(currentWeather.weather_code)
         m_binding.currentWeatherBigIcon.setImageResource(weatherType.iconRes)
         m_binding.weatherDescription.text = weatherType.weatherDesc
-        m_binding.wholeLayout.setBackgroundColor(weatherType.backgroundColor)
+        m_binding.refreshLayout.setBackgroundColor(weatherType.backgroundColor)
     }
 
     private fun fillTodaysData(daily: WeatherDataToday) {
@@ -130,7 +183,10 @@ class MainActivity : AppCompatActivity() {
         m_binding.minTemperature.text = daily.min_temperature
     }
 
-    private fun generateHourlyForecastCards(recyclerView: RecyclerView, hourly: WeatherDataHourly) {
+    private fun generateHourlyForecastCards(
+        recyclerView: RecyclerView,
+        hourly: WeatherDataHourly
+    ) {
         recyclerView.apply {
             layoutManager =
                 LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false);
@@ -138,11 +194,12 @@ class MainActivity : AppCompatActivity() {
         }
         recyclerView.visibility = View.VISIBLE
     }
+
     private fun hideLayout() {
-        m_binding.wholeLayout.visibility = View.GONE
+        m_binding.refreshLayout.visibility = View.GONE
     }
 
     private fun showLayout() {
-        m_binding.wholeLayout.visibility = View.VISIBLE
+        m_binding.refreshLayout.visibility = View.VISIBLE
     }
 }

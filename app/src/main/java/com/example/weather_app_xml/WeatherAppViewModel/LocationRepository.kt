@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 //check how this class works
 @ExperimentalCoroutinesApi
-class LocationService @Inject constructor(
+class LocationRepository @Inject constructor(
     private val locationClient: FusedLocationProviderClient
 ) : ILocationService {
 

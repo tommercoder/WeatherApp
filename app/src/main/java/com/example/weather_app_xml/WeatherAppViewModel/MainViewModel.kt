@@ -14,7 +14,7 @@ class MainViewModel @Inject constructor(
     private val weatherService: IWeatherService,
     private val locationService: ILocationService
 ) : ViewModel() {
-    //todo: decide whether only state should be in livedata or a whole weather object with API data and state data
+
     var weatherData : Weather? = null
     val liveData: MutableLiveData<State?> = weatherService.getLiveData()
     fun loadWeather() {
