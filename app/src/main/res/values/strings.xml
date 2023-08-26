@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Weather</string>
-    <string name="reload_weather">Refresh with a swipe to load weather info again :)</string>
-    <string name="reload_location">To give a location permission please refresh with a swipe :)</string>
+    <string name="reload_weather">No internet or could not load weather. </string>
+    <string name="reload_location">To give a location permission please refresh with a swipe. </string>
+    <string name="forecast_text">forecast</string>
+    <string name="button_hourly">hourly</string>
+    <string name="button_daily">daily</string>
 </resources>

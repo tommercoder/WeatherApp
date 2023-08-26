@@ -13,5 +13,5 @@ abstract class WeatherBinder {
 
     @Binds
     @Singleton
-    abstract fun bindWeatherService(weatherRepository : WeatherRepository) : IWeatherService
+    abstract fun bindWeatherService(weatherRepository : WeatherRepository) : IWeatherRepository
 }

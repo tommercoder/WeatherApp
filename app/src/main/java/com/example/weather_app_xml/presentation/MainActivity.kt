@@ -26,6 +26,7 @@ import com.example.weather_app_xml.R
 import com.example.weather_app_xml.WeatherAppViewModel.MainViewModel
 import com.example.weather_app_xml.WeatherAppViewModel.State
 import com.example.weather_app_xml.WeatherAppViewModel.Weather
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataTimezone
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -57,11 +58,11 @@ class MainActivity : AppCompatActivity() {
         m_binding.refreshLayout.setOnRefreshListener {
             if (hasLocationPermissions()) {
                 viewModel.loadWeather()
+
             } else {
                 requestLocationPermissions()
             }
-
-            m_binding.refreshLayout.isRefreshing = false // stop the refreshing
+            m_binding.refreshLayout.isRefreshing = true
         }
 
         //observe the change of the API request state for current location
@@ -70,19 +71,22 @@ class MainActivity : AppCompatActivity() {
                 State.SUCCESS -> {
                     hideProgressBar()
                     hideInfoText()
+                    m_binding.refreshLayout.isRefreshing = false
                     setupUI(viewModel.weatherData!!) // must be != null here
                 }
 
                 State.ERROR -> {
                     hideProgressBar()
-                    showInfoText(R.string.reload_weather) //todo: fix the crash!!!
+                    m_binding.refreshLayout.isRefreshing = false
+                    showInfoText(R.string.reload_weather)
                 }
 
                 State.LOADING -> {
                     hideInfoText()
-                    //if (!m_binding.refreshLayout.isVisible) { //prevent progress bar visibility when everything is visible
+                    if (!m_binding.refreshLayout.isRefreshing) { //prevent progress bar visibility when everything is visible
                         showProgressBar()
-                   // }
+                    }
+                    m_binding.refreshLayout.isRefreshing = false
                 }
 
                 else -> {
@@ -124,14 +128,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showProgressBar() {
         runOnUiThread {
-            //hideLayout()
             m_binding.progressBar.visibility = View.VISIBLE
         }
     }
 
     private fun hideProgressBar() {
         runOnUiThread {
-            //showLayout()
             m_binding.progressBar.visibility = View.GONE
         }
     }
@@ -154,52 +156,65 @@ class MainActivity : AppCompatActivity() {
         val hourly = info?.data_hourly!!
         val todays = info?.data_today!!
         val current = info?.data_current!!
+        val time_zone = info?.data_timezone!!
 
         runOnUiThread {
             hideProgressBar()
             showLayout()
 
-            m_binding.timeZone.text = info.data_timezone!!.timezone
-            m_binding.forecastText.text =
-                info.data_timezone!!.timezone //todo: check the warning
+            fillTimeZone(time_zone)
             fillCurrentWeather(current)
             fillTodaysData(todays)
             generateHourlyForecastCards(m_binding.hourlyForecast, hourly)
         }
     }
-    //todo add onResume and check whether location is still granted, do the same on every start
+
+    private fun fillTimeZone(zone : WeatherDataTimezone){
+        m_binding.timeZone.text = zone.timezone
+        m_binding.forecastText.text = zone.timezone + " " + resources.getString(R.string.forecast_text) //todo: check the warning
+    }
 
     private fun fillCurrentWeather(currentWeather: WeatherDataCurrent) {
-        m_binding.currentTemperature.text = currentWeather.temperature
-        //binding.currentWindSpeed.text = currentWeather.windSpeed.toString()
-        val weatherType = WeatherType.fromWMO(currentWeather.weather_code)
-        m_binding.currentWeatherBigIcon.setImageResource(weatherType.iconRes)
-        m_binding.weatherDescription.text = weatherType.weatherDesc
-        m_binding.refreshLayout.setBackgroundColor(weatherType.backgroundColor)
+        runOnUiThread {
+            m_binding.currentTemperature.text = currentWeather.temperature
+            //binding.currentWindSpeed.text = currentWeather.windSpeed.toString()
+            val weatherType = WeatherType.fromWMO(currentWeather.weather_code)
+            m_binding.currentWeatherBigIcon.setImageResource(weatherType.iconRes)
+            m_binding.weatherDescription.text = weatherType.weatherDesc
+            m_binding.refreshLayout.setBackgroundResource(weatherType.fullscreenImage)
+        }
     }
 
     private fun fillTodaysData(daily: WeatherDataToday) {
-        m_binding.maxTemperature.text = daily.max_temperature
-        m_binding.minTemperature.text = daily.min_temperature
+        runOnUiThread {
+            m_binding.maxTemperature.text = daily.max_temperature
+            m_binding.minTemperature.text = daily.min_temperature
+        }
     }
 
     private fun generateHourlyForecastCards(
         recyclerView: RecyclerView,
         hourly: WeatherDataHourly
     ) {
-        recyclerView.apply {
-            layoutManager =
-                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false);
-            adapter = HourlyWeatherRecyclerViewAdapter(hourly)
+        runOnUiThread {
+            recyclerView.apply {
+                layoutManager =
+                    LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false);
+                adapter = HourlyWeatherRecyclerViewAdapter(hourly)
+            }
+            recyclerView.visibility = View.VISIBLE
         }
-        recyclerView.visibility = View.VISIBLE
     }
 
     private fun hideLayout() {
-        m_binding.refreshLayout.visibility = View.GONE
+        runOnUiThread {
+            m_binding.refreshLayout.visibility = View.GONE
+        }
     }
 
     private fun showLayout() {
-        m_binding.refreshLayout.visibility = View.VISIBLE
+        runOnUiThread {
+            m_binding.refreshLayout.visibility = View.VISIBLE
+        }
     }
 }

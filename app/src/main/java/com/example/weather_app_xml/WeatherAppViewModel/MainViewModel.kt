@@ -11,16 +11,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val weatherService: IWeatherService,
-    private val locationService: ILocationService
+    private val weatherRepository: IWeatherRepository,
+    private val locationRepository: ILocationRepository
 ) : ViewModel() {
 
     var weatherData : Weather? = null
-    val liveData: MutableLiveData<State?> = weatherService.getLiveData()
+    val liveData: MutableLiveData<State?> = weatherRepository.getLiveData()
     fun loadWeather() {
         viewModelScope.launch {
-            locationService.getLastLocation()?.let { location ->
-                weatherData = weatherService.getWeatherData(location.latitude, location.longitude)
+            locationRepository.getLastLocation()?.let { location ->
+                weatherData = weatherRepository.getWeatherData(location.latitude, location.longitude)
             }
         }
     }

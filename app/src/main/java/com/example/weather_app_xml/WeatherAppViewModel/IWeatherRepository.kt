@@ -13,7 +13,7 @@ data class Weather(
     var current_state: State? = State.LOADING
 )
 //this is singleton works with binds of hilt
-interface IWeatherService {
+interface IWeatherRepository {
     suspend fun getWeatherData(lat : Double, long : Double): Weather
     fun getLiveData() : MutableLiveData<State?>
 }
