@@ -6,5 +6,6 @@
     <color name="clear_sky">#A6EDFF</color>
     <color name="mainly_clear">#BEE3FF</color>
     <color name="grey">#5F5F5F</color>
+    <color name="grey_transparent">#805F5F5F</color>
     <color name="transparent">#00ffffff</color>
 </resources>

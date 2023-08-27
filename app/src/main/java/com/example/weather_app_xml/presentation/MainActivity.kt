@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
             ) {
                 if (hasLocationPermissions()) {
                     viewModel.loadWeather()
+                    onBtnHourlyClicked() // default
                 } else {
                     showInfoText(R.string.reload_location)
                 }
@@ -96,6 +97,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         requestLocationPermissions()
+        setupButtons()
     }
 
     private fun hasLocationPermissions(): Boolean {
@@ -116,6 +118,7 @@ class MainActivity : AppCompatActivity() {
     private fun requestLocationPermissions() {
         hideProgressBar()
         hideInfoText()
+        //hideLayout()
         if (::activityResultLauncher.isInitialized) {
             activityResultLauncher.launch(
                 arrayOf(
@@ -169,15 +172,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun fillTimeZone(zone : WeatherDataTimezone){
+    private fun fillTimeZone(zone: WeatherDataTimezone) {
         m_binding.timeZone.text = zone.timezone
-        m_binding.forecastText.text = zone.timezone + " " + resources.getString(R.string.forecast_text) //todo: check the warning
+        m_binding.forecastText.text =
+            zone.timezone + " " + resources.getString(R.string.forecast_text) //todo: check the warning
     }
 
     private fun fillCurrentWeather(currentWeather: WeatherDataCurrent) {
         runOnUiThread {
             m_binding.currentTemperature.text = currentWeather.temperature
-            //binding.currentWindSpeed.text = currentWeather.windSpeed.toString()
+            m_binding.windSpeedLayout.windSpeed.text = currentWeather.wind_speed
             val weatherType = WeatherType.fromWMO(currentWeather.weather_code)
             m_binding.currentWeatherBigIcon.setImageResource(weatherType.iconRes)
             m_binding.weatherDescription.text = weatherType.weatherDesc
@@ -208,13 +212,42 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideLayout() {
         runOnUiThread {
-            m_binding.refreshLayout.visibility = View.GONE
+            m_binding.refreshLayout.visibility = View.INVISIBLE
         }
     }
 
     private fun showLayout() {
         runOnUiThread {
             m_binding.refreshLayout.visibility = View.VISIBLE
+            m_binding.multipleViewsLayout.visibility = View.VISIBLE
         }
+    }
+
+    private fun setupButtons() {
+        m_binding.btnHourly.setOnClickListener {
+            onBtnHourlyClicked()
+        }
+
+        m_binding.btnDaily.setOnClickListener {
+            onBtnDailyClicked()
+        }
+    }
+
+    private fun onBtnHourlyClicked() {
+        m_binding.btnDaily.isSelected = false
+        m_binding.btnHourly.isSelected = true
+
+        m_binding.hourlyForecast.visibility = View.VISIBLE
+        m_binding.windSpeedLayout.root.visibility = View.VISIBLE
+        //hide the daily forecast
+    }
+
+    private fun onBtnDailyClicked() {
+        m_binding.btnHourly.isSelected = false
+        m_binding.btnDaily.isSelected = true
+
+        m_binding.hourlyForecast.visibility = View.INVISIBLE
+        m_binding.windSpeedLayout.root.visibility = View.GONE
+        //show the daily forecast
     }
 }

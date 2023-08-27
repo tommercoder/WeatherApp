@@ -52,7 +52,6 @@
             android:id="@+id/weatherDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/currentTemperature"
             android:layout_gravity="center"
             android:textColor="@color/white"
             android:textSize="25sp" />
@@ -103,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="80dp" />
 
-        <!--Down block with selection-->
+        <!--Bottom block with selection-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -117,29 +116,69 @@
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:background="@drawable/button_shape_bg"
-                android:text="@string/button_hourly"
-                android:textColor="@color/white"
-                android:layout_gravity="center_horizontal"/>
-
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/multipleViewsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@drawable/bottom_shape_bg">
+                android:background="@drawable/bottom_shape_bg"
+                android:visibility="invisible">
+
+                <!--Buttons-->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/hourlyForecast"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    android:paddingBottom="20dp">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnHourly"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:background="@drawable/button_selector"
+                        android:text="@string/button_hourly"
+                        android:textColor="@drawable/button_selector_text_color"
+                        android:textSize="15sp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnDaily"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:background="@drawable/button_selector"
+                        android:text="@string/button_daily"
+                        android:textColor="@drawable/button_selector_text_color"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/hourlyForecast"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:visibility="invisible" />
+                    android:visibility="visible" />
 
-            </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/dailyForecast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:visibility="visible" />
+
+                <!--Windspeed-->
+                <include
+                    android:id="@+id/windSpeedLayout"
+                    layout="@layout/wind_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/hourlyForecast"
+                    android:layout_centerInParent="true"/>
+
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 

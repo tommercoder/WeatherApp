@@ -55,7 +55,7 @@ class WeatherTypesMapper {
         return WeatherDataCurrent(
             temperature = "${currentFromAPI.temperature.toInt()}${Constants.degreeSign}",
             weather_code = currentFromAPI.weatherCode,
-            wind_speed = currentFromAPI.windSpeed
+            wind_speed = currentFromAPI.windSpeed.toString()
         )
     }
 }

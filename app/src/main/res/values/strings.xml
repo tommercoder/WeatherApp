@@ -3,6 +3,8 @@
     <string name="reload_weather">No internet or could not load weather. </string>
     <string name="reload_location">To give a location permission please refresh with a swipe. </string>
     <string name="forecast_text">forecast</string>
-    <string name="button_hourly">hourly</string>
-    <string name="button_daily">daily</string>
+    <string name="button_hourly">Hourly</string>
+    <string name="button_daily">Daily</string>
+    <string name="wind">Wind</string>
+    <string name="km_h">km/h</string>
 </resources>

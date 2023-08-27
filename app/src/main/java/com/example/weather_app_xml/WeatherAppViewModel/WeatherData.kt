@@ -21,7 +21,7 @@ data class WeatherDataToday(
 data class WeatherDataCurrent(
     val temperature : String,
     val weather_code : Int,
-    val wind_speed : Double
+    val wind_speed : String
 )
 
 data class WeatherDataTimezone(
