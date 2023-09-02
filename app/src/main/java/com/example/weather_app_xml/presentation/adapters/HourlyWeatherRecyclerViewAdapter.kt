@@ -12,7 +12,7 @@ import com.example.weather_app_xml.WeatherAppViewModel.Constants
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
 import com.example.weather_app_xml.data.helpers.TimeFormatter
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherType
-//must be reworked to local types
+
 class HourlyWeatherRecyclerViewAdapter(val data: WeatherDataHourly) : //use HourlyDto instead?
     RecyclerView.Adapter<WeatherSmallBoxHolder>() {
 
@@ -22,7 +22,7 @@ class HourlyWeatherRecyclerViewAdapter(val data: WeatherDataHourly) : //use Hour
     }
 
     override fun getItemCount(): Int {
-        return Constants.dayHours // 24
+        return Constants.forecastHours
     }
 
     override fun onBindViewHolder(holder: WeatherSmallBoxHolder, position: Int) {

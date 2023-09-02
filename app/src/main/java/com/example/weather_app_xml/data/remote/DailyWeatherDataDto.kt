@@ -4,7 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class DailyWeatherDataDto(
     @SerializedName("temperature_2m_max")
-    val todaysMaxTemperature: List<Double>,
+    val maxTemperatures: List<Double>,
     @SerializedName("temperature_2m_min")
-    val todaysMinTemperature: List<Double>
+    val minTemperatures: List<Double>,
+    @SerializedName("weathercode")
+    val weatherCodes: List<Int>,
+    @SerializedName("time")
+    val dates: List<String>
 )

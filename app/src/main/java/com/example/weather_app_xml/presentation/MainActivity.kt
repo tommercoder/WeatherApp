@@ -26,7 +26,9 @@ import com.example.weather_app_xml.R
 import com.example.weather_app_xml.WeatherAppViewModel.MainViewModel
 import com.example.weather_app_xml.WeatherAppViewModel.State
 import com.example.weather_app_xml.WeatherAppViewModel.Weather
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataDaily
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataTimezone
+import com.example.weather_app_xml.presentation.adapters.DailyWeatherRecyclerViewAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -49,7 +51,6 @@ class MainActivity : AppCompatActivity() {
             ) {
                 if (hasLocationPermissions()) {
                     viewModel.loadWeather()
-                    onBtnHourlyClicked() // default
                 } else {
                     showInfoText(R.string.reload_location)
                 }
@@ -74,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                     hideInfoText()
                     m_binding.refreshLayout.isRefreshing = false
                     setupUI(viewModel.weatherData!!) // must be != null here
+                    onBtnHourlyClicked() // default
                 }
 
                 State.ERROR -> {
@@ -157,6 +159,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupUI(weather: Weather) {
         val info = weather.weather
         val hourly = info?.data_hourly!!
+        val daily = info?.data_daily!!
         val todays = info?.data_today!!
         val current = info?.data_current!!
         val time_zone = info?.data_timezone!!
@@ -169,6 +172,7 @@ class MainActivity : AppCompatActivity() {
             fillCurrentWeather(current)
             fillTodaysData(todays)
             generateHourlyForecastCards(m_binding.hourlyForecast, hourly)
+            generateDailyForecastCards(m_binding.dailyForecast, daily)
         }
     }
 
@@ -210,6 +214,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun generateDailyForecastCards(
+        recyclerView: RecyclerView,
+        daily: WeatherDataDaily
+    ) {
+        runOnUiThread {
+            recyclerView.apply {
+                layoutManager =
+                    LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false);
+                adapter = DailyWeatherRecyclerViewAdapter(daily)
+            }
+            recyclerView.visibility = View.VISIBLE
+        }
+    }
+
     private fun hideLayout() {
         runOnUiThread {
             m_binding.refreshLayout.visibility = View.INVISIBLE
@@ -239,7 +257,7 @@ class MainActivity : AppCompatActivity() {
 
         m_binding.hourlyForecast.visibility = View.VISIBLE
         m_binding.windSpeedLayout.root.visibility = View.VISIBLE
-        //hide the daily forecast
+        m_binding.dailyForecast.visibility = View.GONE
     }
 
     private fun onBtnDailyClicked() {
@@ -248,6 +266,6 @@ class MainActivity : AppCompatActivity() {
 
         m_binding.hourlyForecast.visibility = View.INVISIBLE
         m_binding.windSpeedLayout.root.visibility = View.GONE
-        //show the daily forecast
+        m_binding.dailyForecast.visibility = View.VISIBLE
     }
 }

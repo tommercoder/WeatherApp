@@ -126,12 +126,13 @@
 
                 <!--Buttons-->
                 <LinearLayout
+                    android:id="@+id/buttonsLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/hourlyForecast"
                     android:layout_centerHorizontal="true"
                     android:orientation="horizontal"
-                    android:paddingBottom="20dp">
+                    android:paddingBottom="10dp">
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btnHourly"
@@ -167,7 +168,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:paddingBottom="5dp"
+                    android:layout_below="@+id/buttonsLayout"/>
 
                 <!--Windspeed-->
                 <include
