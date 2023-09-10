@@ -15,9 +15,20 @@ import com.example.weather_app_xml.WeatherAppViewModel.WeatherType
 class DailyWeatherRecyclerViewAdapter(val data: WeatherDataDaily) :
     RecyclerView.Adapter<WeatherDailyHolder>() {
 
+    private lateinit var m_listener: onItemClickListener
+
+    interface onItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
+    fun setOnItemClickListener(listener: onItemClickListener) {
+        m_listener = listener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherDailyHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.daily_rectangle, parent, false)
-        return WeatherDailyHolder(view)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.daily_rectangle, parent, false)
+        return WeatherDailyHolder(view, m_listener)
     }
 
     override fun getItemCount(): Int {
@@ -29,12 +40,17 @@ class DailyWeatherRecyclerViewAdapter(val data: WeatherDataDaily) :
     }
 }
 
-class WeatherDailyHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-{
+class WeatherDailyHolder(itemView: View, listener: DailyWeatherRecyclerViewAdapter.onItemClickListener) : RecyclerView.ViewHolder(itemView) {
     private val date: TextView = itemView.findViewById(R.id.date)
     private val icon: ImageView = itemView.findViewById(R.id.weatherTypeIcon)
     private val temperatureLow: TextView = itemView.findViewById(R.id.lowestTemperature)
     private val temperatureHigh: TextView = itemView.findViewById(R.id.highestTemperature)
+
+    init {
+        itemView.setOnClickListener{
+            listener.onItemClick(adapterPosition)
+        }
+    }
 
     fun bindView(data: WeatherDataDaily?, position: Int) {
         data?.let {

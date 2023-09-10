@@ -1,47 +1,47 @@
 package com.example.weather_app_xml.presentation
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import androidx.activity.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_app_xml.presentation.adapters.HourlyWeatherRecyclerViewAdapter
-import com.example.weather_app_xml.databinding.ActivityMainBinding
-import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataCurrent
-import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
-import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataToday
-import com.example.weather_app_xml.WeatherAppViewModel.WeatherType
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_app_xml.R
 import com.example.weather_app_xml.WeatherAppViewModel.MainViewModel
 import com.example.weather_app_xml.WeatherAppViewModel.State
 import com.example.weather_app_xml.WeatherAppViewModel.Weather
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataCurrent
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataDaily
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataTimezone
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataToday
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherType
+import com.example.weather_app_xml.databinding.ActivityMainBinding
 import com.example.weather_app_xml.presentation.adapters.DailyWeatherRecyclerViewAdapter
+import com.example.weather_app_xml.presentation.adapters.HourlyWeatherRecyclerViewAdapter
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var m_binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     private lateinit var activityResultLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        m_binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
-        setContentView(m_binding.root)
+        binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
+        setContentView(binding.root)
 
         //todo: check what to do with the deny forever case!!!
         //location permission result launcher
@@ -57,14 +57,14 @@ class MainActivity : AppCompatActivity() {
             }
 
         //observe the activity swipe to refresh
-        m_binding.refreshLayout.setOnRefreshListener {
+        binding.refreshLayout.setOnRefreshListener {
             if (hasLocationPermissions()) {
                 viewModel.loadWeather()
 
             } else {
                 requestLocationPermissions()
             }
-            m_binding.refreshLayout.isRefreshing = true
+            binding.refreshLayout.isRefreshing = true
         }
 
         //observe the change of the API request state for current location
@@ -73,26 +73,29 @@ class MainActivity : AppCompatActivity() {
                 State.SUCCESS -> {
                     hideProgressBar()
                     hideInfoText()
-                    m_binding.refreshLayout.isRefreshing = false
+                    binding.refreshLayout.isRefreshing = false
                     setupUI(viewModel.weatherData!!) // must be != null here
                     onBtnHourlyClicked() // default
                 }
 
                 State.ERROR -> {
                     hideProgressBar()
-                    m_binding.refreshLayout.isRefreshing = false
+                    binding.refreshLayout.isRefreshing = false
                     showInfoText(R.string.reload_weather)
                 }
 
                 State.LOADING -> {
                     hideInfoText()
-                    if (!m_binding.refreshLayout.isRefreshing) { //prevent progress bar visibility when everything is visible
+                    if (!binding.refreshLayout.isRefreshing) { //prevent progress bar visibility when everything is visible
                         showProgressBar()
                     }
-                    m_binding.refreshLayout.isRefreshing = false
+                    binding.refreshLayout.isRefreshing = false
                 }
 
                 else -> {
+                    hideProgressBar()
+                    binding.refreshLayout.isRefreshing = false
+                    showInfoText(R.string.something_went_wrong)
                     //mustn't happen
                 }
             }
@@ -133,26 +136,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun showProgressBar() {
         runOnUiThread {
-            m_binding.progressBar.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.VISIBLE
         }
     }
 
     private fun hideProgressBar() {
         runOnUiThread {
-            m_binding.progressBar.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
         }
     }
 
     private fun showInfoText(id: Int) {
         runOnUiThread {
-            m_binding.infoText.setText(resources.getString(id))
-            m_binding.infoText.visibility = View.VISIBLE
+            binding.infoText.setText(resources.getString(id))
+            binding.infoText.visibility = View.VISIBLE
         }
     }
 
     private fun hideInfoText() {
         runOnUiThread {
-            m_binding.infoText.visibility = View.GONE
+            binding.infoText.visibility = View.GONE
         }
     }
 
@@ -171,32 +174,32 @@ class MainActivity : AppCompatActivity() {
             fillTimeZone(time_zone)
             fillCurrentWeather(current)
             fillTodaysData(todays)
-            generateHourlyForecastCards(m_binding.hourlyForecast, hourly)
-            generateDailyForecastCards(m_binding.dailyForecast, daily)
+            generateHourlyForecastCards(binding.hourlyForecast, hourly)
+            generateDailyForecastCards(binding.dailyForecast, daily)
         }
     }
 
     private fun fillTimeZone(zone: WeatherDataTimezone) {
-        m_binding.timeZone.text = zone.timezone
-        m_binding.forecastText.text =
+        binding.timeZone.text = zone.timezone
+        binding.forecastText.text =
             zone.timezone + " " + resources.getString(R.string.forecast_text) //todo: check the warning
     }
 
     private fun fillCurrentWeather(currentWeather: WeatherDataCurrent) {
         runOnUiThread {
-            m_binding.currentTemperature.text = currentWeather.temperature
-            m_binding.windSpeedLayout.windSpeed.text = currentWeather.wind_speed
+            binding.currentTemperature.text = currentWeather.temperature
+            binding.windSpeedLayout.windSpeed.text = currentWeather.wind_speed
             val weatherType = WeatherType.fromWMO(currentWeather.weather_code)
-            m_binding.currentWeatherBigIcon.setImageResource(weatherType.iconRes)
-            m_binding.weatherDescription.text = weatherType.weatherDesc
-            m_binding.refreshLayout.setBackgroundResource(weatherType.fullscreenImage)
+            binding.currentWeatherBigIcon.setImageResource(weatherType.iconRes)
+            binding.weatherDescription.text = weatherType.weatherDesc
+            binding.refreshLayout.setBackgroundResource(weatherType.fullscreenImage)
         }
     }
 
     private fun fillTodaysData(daily: WeatherDataToday) {
         runOnUiThread {
-            m_binding.maxTemperature.text = daily.max_temperature
-            m_binding.minTemperature.text = daily.min_temperature
+            binding.maxTemperature.text = daily.max_temperature
+            binding.minTemperature.text = daily.min_temperature
         }
     }
 
@@ -219,53 +222,70 @@ class MainActivity : AppCompatActivity() {
         daily: WeatherDataDaily
     ) {
         runOnUiThread {
+            //setup on click
+            var _adapter = DailyWeatherRecyclerViewAdapter(daily)
+            _adapter.setOnItemClickListener(object :
+                DailyWeatherRecyclerViewAdapter.onItemClickListener {
+                override fun onItemClick(position: Int) {
+                    onDailyForecastClicked(position)
+                }
+            })
+
             recyclerView.apply {
                 layoutManager =
                     LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false);
-                adapter = DailyWeatherRecyclerViewAdapter(daily)
+                adapter = _adapter
+                visibility = View.VISIBLE
             }
-            recyclerView.visibility = View.VISIBLE
         }
+    }
+
+    private fun onDailyForecastClicked(position: Int){
+        //implement opening of a different fragment with some data
+        Log.d("TAG", position.toString())
+
+        val d = DailyForecastFragment()
+        d.show(supportFragmentManager, "")
     }
 
     private fun hideLayout() {
         runOnUiThread {
-            m_binding.refreshLayout.visibility = View.INVISIBLE
+            binding.refreshLayout.visibility = View.INVISIBLE
         }
     }
 
     private fun showLayout() {
         runOnUiThread {
-            m_binding.refreshLayout.visibility = View.VISIBLE
-            m_binding.multipleViewsLayout.visibility = View.VISIBLE
+            binding.refreshLayout.visibility = View.VISIBLE
+            binding.multipleViewsLayout.visibility = View.VISIBLE
         }
     }
 
     private fun setupButtons() {
-        m_binding.btnHourly.setOnClickListener {
+        binding.btnHourly.setOnClickListener {
             onBtnHourlyClicked()
         }
 
-        m_binding.btnDaily.setOnClickListener {
+        binding.btnDaily.setOnClickListener {
             onBtnDailyClicked()
         }
     }
 
     private fun onBtnHourlyClicked() {
-        m_binding.btnDaily.isSelected = false
-        m_binding.btnHourly.isSelected = true
+        binding.btnDaily.isSelected = false
+        binding.btnHourly.isSelected = true
 
-        m_binding.hourlyForecast.visibility = View.VISIBLE
-        m_binding.windSpeedLayout.root.visibility = View.VISIBLE
-        m_binding.dailyForecast.visibility = View.GONE
+        binding.hourlyForecast.visibility = View.VISIBLE
+        binding.windSpeedLayout.root.visibility = View.VISIBLE
+        binding.dailyForecast.visibility = View.GONE
     }
 
     private fun onBtnDailyClicked() {
-        m_binding.btnHourly.isSelected = false
-        m_binding.btnDaily.isSelected = true
+        binding.btnHourly.isSelected = false
+        binding.btnDaily.isSelected = true
 
-        m_binding.hourlyForecast.visibility = View.INVISIBLE
-        m_binding.windSpeedLayout.root.visibility = View.GONE
-        m_binding.dailyForecast.visibility = View.VISIBLE
+        binding.hourlyForecast.visibility = View.INVISIBLE
+        binding.windSpeedLayout.root.visibility = View.GONE
+        binding.dailyForecast.visibility = View.VISIBLE
     }
 }

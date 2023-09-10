@@ -2,6 +2,7 @@
     <string name="app_name">Weather</string>
     <string name="reload_weather">No internet or could not load weather. </string>
     <string name="reload_location">To give a location permission please refresh with a swipe. </string>
+    <string name="something_went_wrong">Something went wrong. Try to refresh. </string>
     <string name="forecast_text">forecast</string>
     <string name="button_hourly">Hourly</string>
     <string name="button_daily">Daily</string>
