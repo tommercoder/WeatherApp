@@ -26,6 +26,13 @@ data class WeatherDataDaily(
     val highest_temps: List<String>
 )
 
+//data class DetailedOneDayData(
+//    val date: String,
+//    val weather_code: Int,
+//    val lowest_temp: String,
+//    val highest_temp: String
+//)
+
 data class WeatherDataCurrent(
     val temperature: String,
     val weather_code: Int,

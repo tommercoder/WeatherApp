@@ -7,8 +7,15 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationRequest.*
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
@@ -22,42 +29,43 @@ class LocationRepository @Inject constructor(
 
     @SuppressLint("MissingPermission") //to suppress an error regarding permission from a user
     override suspend fun getLastLocation(): Location? {
-        val hasAccessFineLocationPermission = ContextCompat.checkSelfPermission(
-            application,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        val hasAccessCoarseLocationPermission = ContextCompat.checkSelfPermission(
-            application,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-
-        val locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager =
+            application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if(!hasAccessCoarseLocationPermission || !hasAccessFineLocationPermission || !isGpsEnabled) {
+        if (!application.applicationContext.hasLocationPermission() || !isGpsEnabled) {
             return null
         }
 
+        //initial request
+//        locationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, object : CancellationToken() {
+//            override fun onCanceledRequested(p0: OnTokenCanceledListener) = CancellationTokenSource().token
+//
+//            override fun isCancellationRequested() = false
+//        })
+//            .addOnSuccessListener { location: Location? ->
+//                if (location == null)
+//                else {
+//                    val lat = location.latitude
+//                    val lon = location.longitude
+//                }
+//
+//            }
+
         return suspendCancellableCoroutine { cont ->
-            locationClient.lastLocation.apply {
-                if (isComplete) {
-                    if (isSuccessful) {
-                        cont.resume(result, null)
-                    } else {
-                        cont.resume(null, null)
-                    }
-                    return@suspendCancellableCoroutine
-                }
-                addOnSuccessListener {
-                    cont.resume(it, null)
-                }
-                addOnFailureListener {
+            locationClient.lastLocation.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    cont.resume(task.result, null)
+                    Log.d("aaa", "HAS LOCATIONS2")
+                } else {
                     cont.resume(null, null)
                 }
-                addOnCanceledListener {
-                    cont.cancel()
-                }
+            }.addOnCanceledListener {
+                cont.cancel()
+            }.addOnFailureListener {
+                cont.cancel()
             }
+
         }
     }
 }

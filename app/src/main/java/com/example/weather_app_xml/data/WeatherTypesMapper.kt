@@ -7,6 +7,7 @@ import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHolder
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataTimezone
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataToday
+import com.example.weather_app_xml.WeatherAppViewModel.checkAndReturnSublist
 import com.example.weather_app_xml.data.remote.CurrentWeatherDataDto
 import com.example.weather_app_xml.data.remote.DailyWeatherDataDto
 import com.example.weather_app_xml.data.remote.HourlyWeatherDataDto
@@ -38,39 +39,30 @@ class WeatherTypesMapper {
         val hoursApi = hourlyFromAPI.time
 
         val hoursShift = currentHour + Constants.forecastHours
-        val displayedHours: List<String> =
-            hoursApi.subList(currentHour, hoursShift)
+        var displayedHours: List<String> = checkAndReturnSublist(currentHour, hoursShift, hoursApi)
+        var displayedTemperatures: List<String> = doubleTemperaturesToString(
+            checkAndReturnSublist(
+                currentHour,
+                hoursShift,
+                hourlyFromAPI.temperatures
+            )
+        )
 
         return WeatherDataHourly(
             hours = displayedHours,
-            temperatures = doubleTemperaturesToString(
-                hourlyFromAPI.temperatures.subList(
-                    currentHour,
-                    hoursShift
-                )
-            ),
-            weather_codes = hourlyFromAPI.weatherCodes.subList(currentHour, hoursShift)
+            temperatures = displayedTemperatures,
+            weather_codes = checkAndReturnSublist(currentHour, hoursShift, hourlyFromAPI.weatherCodes)
         )
     }
 
     private fun mapDaily(dailyFromAPI: DailyWeatherDataDto): WeatherDataDaily {
         val shift = 1 // start from tomorrow
-        val last_position = Constants.forecastDays + shift // 11
+        val endPosition = Constants.forecastDays + shift // 11
         return WeatherDataDaily( // is there any better way to implement this?
-            dates = dailyFromAPI.dates.subList(shift, last_position),
-            highest_temps = doubleTemperaturesToString(
-                dailyFromAPI.maxTemperatures.subList(
-                    shift,
-                    last_position
-                )
-            ),
-            lowest_temps = doubleTemperaturesToString(
-                dailyFromAPI.minTemperatures.subList(
-                    shift,
-                    last_position
-                )
-            ),
-            weather_codes = dailyFromAPI.weatherCodes.subList(shift, last_position)
+            dates = checkAndReturnSublist(shift, endPosition, dailyFromAPI.dates),
+            highest_temps = doubleTemperaturesToString(checkAndReturnSublist(shift, endPosition,dailyFromAPI.maxTemperatures)),
+            lowest_temps = doubleTemperaturesToString(checkAndReturnSublist(shift, endPosition,dailyFromAPI.minTemperatures)),
+            weather_codes = checkAndReturnSublist(shift, endPosition, dailyFromAPI.weatherCodes)
         )
     }
 
@@ -88,4 +80,5 @@ class WeatherTypesMapper {
             wind_speed = currentFromAPI.windSpeed.toString()
         )
     }
+
 }

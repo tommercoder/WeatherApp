@@ -11,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,10 +20,12 @@ import com.example.weather_app_xml.WeatherAppViewModel.State
 import com.example.weather_app_xml.WeatherAppViewModel.Weather
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataCurrent
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataDaily
+import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHolder
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataTimezone
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataToday
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherType
+import com.example.weather_app_xml.WeatherAppViewModel.hasLocationPermission
 import com.example.weather_app_xml.databinding.ActivityMainBinding
 import com.example.weather_app_xml.presentation.adapters.DailyWeatherRecyclerViewAdapter
 import com.example.weather_app_xml.presentation.adapters.HourlyWeatherRecyclerViewAdapter
@@ -50,14 +51,17 @@ class MainActivity : AppCompatActivity() {
                 ActivityResultContracts.RequestMultiplePermissions()
             ) {
                 if (hasLocationPermissions()) {
+                    Log.d("TAG", "trigger loadWEather")
                     viewModel.loadWeather()
                 } else {
+                    Log.d("TAG", "no location permissions")
                     showInfoText(R.string.reload_location)
                 }
             }
 
         //observe the activity swipe to refresh
         binding.refreshLayout.setOnRefreshListener {
+            //hide internal progress bar?
             if (hasLocationPermissions()) {
                 viewModel.loadWeather()
 
@@ -106,18 +110,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hasLocationPermissions(): Boolean {
-        val fineLocationPermission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-
-        val coarseLocationPermission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-
-        return fineLocationPermission == PackageManager.PERMISSION_GRANTED &&
-                coarseLocationPermission == PackageManager.PERMISSION_GRANTED
+        return application.applicationContext.hasLocationPermission()
     }
 
     private fun requestLocationPermissions() {
@@ -175,7 +168,7 @@ class MainActivity : AppCompatActivity() {
             fillCurrentWeather(current)
             fillTodaysData(todays)
             generateHourlyForecastCards(binding.hourlyForecast, hourly)
-            generateDailyForecastCards(binding.dailyForecast, daily)
+            generateDailyForecastCards(binding.dailyForecast, info)
         }
     }
 
@@ -219,15 +212,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun generateDailyForecastCards(
         recyclerView: RecyclerView,
-        daily: WeatherDataDaily
+        data: WeatherDataHolder
     ) {
         runOnUiThread {
             //setup on click
-            var _adapter = DailyWeatherRecyclerViewAdapter(daily)
+            var _adapter = DailyWeatherRecyclerViewAdapter(data.data_daily!!)
             _adapter.setOnItemClickListener(object :
                 DailyWeatherRecyclerViewAdapter.onItemClickListener {
                 override fun onItemClick(position: Int) {
-                    onDailyForecastClicked(position)
+                    onDailyForecastClicked(data, position)
                 }
             })
 
@@ -240,11 +233,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onDailyForecastClicked(position: Int){
+    private fun onDailyForecastClicked(data: WeatherDataHolder, position: Int){
         //implement opening of a different fragment with some data
         Log.d("TAG", position.toString())
 
-        val d = DailyForecastFragment()
+        val d = DailyForecastFragment(data, position)
         d.show(supportFragmentManager, "")
     }
 

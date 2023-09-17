@@ -16,4 +16,5 @@ data class Weather(
 interface IWeatherRepository {
     suspend fun getWeatherData(lat : Double, long : Double): Weather
     fun getLiveData() : MutableLiveData<State?>
+    fun getDefaultState() : State
 }

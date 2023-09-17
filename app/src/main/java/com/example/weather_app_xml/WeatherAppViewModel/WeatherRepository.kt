@@ -24,17 +24,20 @@ class WeatherRepository @Inject constructor(
     private val m_weather = Weather() // null
     private val m_mapper = WeatherTypesMapper()
 
-    private val liveData = MutableLiveData<State?>()
+    private val liveData = MutableLiveData<State?>().apply {
+        value = getDefaultState()
+    }
     override suspend fun getWeatherData(lat: Double, long: Double): Weather {
         if (!hasInternetConnection(applicaton)) {
             m_weather.current_state = State.ERROR
             liveData.value = m_weather.current_state
+            Log.d("AAA", "NO INTERNET")
             return Weather()
         }
 
         m_weather.current_state = State.LOADING
         liveData.value = m_weather.current_state
-
+        Log.d("AAA", "INTERNET")
         CoroutineScope(Dispatchers.IO).launch {
             val response = api.getWeather(lat, long)
             if (response.isSuccessful) {
@@ -56,6 +59,10 @@ class WeatherRepository @Inject constructor(
 
     override fun getLiveData(): MutableLiveData<State?> {
         return liveData
+    }
+
+    override fun getDefaultState(): State {
+        return State.ERROR
     }
 
     private fun hasInternetConnection(context: Context): Boolean {

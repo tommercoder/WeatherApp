@@ -170,7 +170,8 @@
                     android:layout_gravity="center"
                     android:visibility="visible"
                     android:paddingBottom="5dp"
-                    android:layout_below="@+id/buttonsLayout"/>
+                    android:layout_below="@+id/buttonsLayout"
+                    android:focusableInTouchMode="true"/>
 
                 <!--Windspeed-->
                 <include

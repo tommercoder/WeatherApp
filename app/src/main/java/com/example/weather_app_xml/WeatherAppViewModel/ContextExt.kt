@@ -7,13 +7,13 @@ import android.content.Context
 
 //probably not needed
 fun Context.hasLocationPermission(): Boolean {
- return ContextCompat.checkSelfPermission(
-     this,
-     Manifest.permission.ACCESS_COARSE_LOCATION
- ) == PackageManager.PERMISSION_GRANTED &&
-    ContextCompat.checkSelfPermission(
+    return ContextCompat.checkSelfPermission(
         this,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    ) == PackageManager.PERMISSION_GRANTED
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
 
 }
