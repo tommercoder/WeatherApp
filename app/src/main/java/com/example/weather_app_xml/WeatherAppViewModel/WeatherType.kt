@@ -28,6 +28,16 @@ sealed class WeatherType( //what's sealed?
         iconRes = R.drawable.overcast,
         fullscreenImage = R.drawable.overcast_fullscreen
     )
+    object Rainy : WeatherType(
+        weatherDesc = "Rainy",
+        iconRes = R.drawable.rainy,
+        fullscreenImage = R.drawable.overcast_fullscreen
+    )
+    object Drizzle : WeatherType(
+        weatherDesc = "Drizzle",
+        iconRes = R.drawable.drizzly,
+        fullscreenImage = R.drawable.overcast_fullscreen
+    )
 
     companion object {
         fun fromWMO(code: Int): WeatherType {
@@ -36,6 +46,8 @@ sealed class WeatherType( //what's sealed?
                 1 -> MainlyClear
                 2 -> PartlyCloudy
                 3 -> Overcast
+                61, 63, 65 -> Rainy
+                51, 53, 55 -> Drizzle
                 else -> ClearSky
             }
         }

@@ -15,6 +15,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_app_xml.R
+import com.example.weather_app_xml.WeatherAppViewModel.Constants
+import com.example.weather_app_xml.WeatherAppViewModel.DetailedDailyWeather
 import com.example.weather_app_xml.WeatherAppViewModel.MainViewModel
 import com.example.weather_app_xml.WeatherAppViewModel.State
 import com.example.weather_app_xml.WeatherAppViewModel.Weather
@@ -25,11 +27,14 @@ import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataTimezone
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataToday
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherType
+import com.example.weather_app_xml.WeatherAppViewModel.checkAndReturnSublist
 import com.example.weather_app_xml.WeatherAppViewModel.hasLocationPermission
+import com.example.weather_app_xml.data.WeatherTypesMapper
 import com.example.weather_app_xml.databinding.ActivityMainBinding
 import com.example.weather_app_xml.presentation.adapters.DailyWeatherRecyclerViewAdapter
 import com.example.weather_app_xml.presentation.adapters.HourlyWeatherRecyclerViewAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Calendar
 
 
 @AndroidEntryPoint
@@ -167,7 +172,7 @@ class MainActivity : AppCompatActivity() {
             fillTimeZone(time_zone)
             fillCurrentWeather(current)
             fillTodaysData(todays)
-            generateHourlyForecastCards(binding.hourlyForecast, hourly)
+            generateHourlyForecastCards(binding.hourlyForecast, info)
             generateDailyForecastCards(binding.dailyForecast, info)
         }
     }
@@ -198,13 +203,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun generateHourlyForecastCards(
         recyclerView: RecyclerView,
-        hourly: WeatherDataHourly
+        data: WeatherDataHolder
     ) {
+        val hourlyFull = data.data_hourly!!
+        val currentHour = data.data_current!!.current_hour
+        val hoursApi = hourlyFull.hours
+        val hoursShift = currentHour + Constants.forecastHours
+
+        val hourlyForDisplay = WeatherDataHourly(
+            hours = checkAndReturnSublist(currentHour, hoursShift, hoursApi),
+            temperatures = checkAndReturnSublist(currentHour,  hoursShift, hourlyFull.temperatures),
+            weather_codes = checkAndReturnSublist(currentHour, hoursShift, hourlyFull.weather_codes)
+        )
+
         runOnUiThread {
             recyclerView.apply {
                 layoutManager =
                     LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false);
-                adapter = HourlyWeatherRecyclerViewAdapter(hourly)
+                adapter = HourlyWeatherRecyclerViewAdapter(hourlyForDisplay)
             }
             recyclerView.visibility = View.VISIBLE
         }
@@ -233,18 +249,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onDailyForecastClicked(data: WeatherDataHolder, position: Int){
-        //implement opening of a different fragment with some data
-        Log.d("TAG", position.toString())
+    private fun onDailyForecastClicked(data: WeatherDataHolder, position: Int) {
 
-        val d = DailyForecastFragment(data, position)
+        val startPosition: Int = position * Constants.forecastHours
+        val endPosition: Int = startPosition + Constants.forecastHours
+
+        val hourlyFull = data.data_hourly!!
+        val specificDayHourly = WeatherDataHourly(
+            hours = checkAndReturnSublist(startPosition, endPosition, hourlyFull.hours),
+            temperatures = checkAndReturnSublist(startPosition, endPosition, hourlyFull.temperatures),
+            weather_codes = checkAndReturnSublist(startPosition, endPosition, hourlyFull.weather_codes)
+        )
+
+        val daily = data.data_daily!!
+        val detailed_data = DetailedDailyWeather(
+            daily_date = daily.dates[position],
+            daily_weather_code = daily.weather_codes[position],
+            daily_lowest_temp = daily.lowest_temps[position],
+            daily_highest_temp = daily.highest_temps[position],
+            specificDayHourly
+        )
+
+        val d = DailyForecastFragment(detailed_data)
         d.show(supportFragmentManager, "")
-    }
-
-    private fun hideLayout() {
-        runOnUiThread {
-            binding.refreshLayout.visibility = View.INVISIBLE
-        }
     }
 
     private fun showLayout() {

@@ -13,7 +13,7 @@ import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
 import com.example.weather_app_xml.data.helpers.TimeFormatter
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherType
 
-class HourlyWeatherRecyclerViewAdapter(val data: WeatherDataHourly) : //use HourlyDto instead?
+class HourlyWeatherRecyclerViewAdapter(val data: WeatherDataHourly) :
     RecyclerView.Adapter<WeatherSmallBoxHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherSmallBoxHolder {

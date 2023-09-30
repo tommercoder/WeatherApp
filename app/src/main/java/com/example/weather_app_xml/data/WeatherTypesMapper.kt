@@ -8,6 +8,7 @@ import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataHourly
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataTimezone
 import com.example.weather_app_xml.WeatherAppViewModel.WeatherDataToday
 import com.example.weather_app_xml.WeatherAppViewModel.checkAndReturnSublist
+import com.example.weather_app_xml.data.helpers.TimeFormatter
 import com.example.weather_app_xml.data.remote.CurrentWeatherDataDto
 import com.example.weather_app_xml.data.remote.DailyWeatherDataDto
 import com.example.weather_app_xml.data.remote.HourlyWeatherDataDto
@@ -30,39 +31,22 @@ class WeatherTypesMapper {
         return temperatures.map { "${it.toInt()}${Constants.degreeSign}" }
     }
 
-    private fun mapHourly(hourlyFromAPI: HourlyWeatherDataDto): WeatherDataHourly {
-        //API doesn't contain GMT+3, that's why current display data is different from the first hourly card
-        //seems that should work on a real phone, not an the emulator
-        //could be fixed by using the current_data time instead of Calendar
-        val calendar = Calendar.getInstance()
-        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
-        val hoursApi = hourlyFromAPI.time
-
-        val hoursShift = currentHour + Constants.forecastHours
-        var displayedHours: List<String> = checkAndReturnSublist(currentHour, hoursShift, hoursApi)
-        var displayedTemperatures: List<String> = doubleTemperaturesToString(
-            checkAndReturnSublist(
-                currentHour,
-                hoursShift,
-                hourlyFromAPI.temperatures
-            )
-        )
-
+    private fun mapHourly(hourlyFromAPI: HourlyWeatherDataDto): WeatherDataHourly { //get whole list(sub lists are done when using)
         return WeatherDataHourly(
-            hours = displayedHours,
-            temperatures = displayedTemperatures,
-            weather_codes = checkAndReturnSublist(currentHour, hoursShift, hourlyFromAPI.weatherCodes)
+            hours = hourlyFromAPI.time,
+            temperatures = doubleTemperaturesToString(hourlyFromAPI.temperatures),
+            weather_codes = hourlyFromAPI.weatherCodes
         )
     }
 
     private fun mapDaily(dailyFromAPI: DailyWeatherDataDto): WeatherDataDaily {
-        val shift = 1 // start from tomorrow
-        val endPosition = Constants.forecastDays + shift // 11
-        return WeatherDataDaily( // is there any better way to implement this?
-            dates = checkAndReturnSublist(shift, endPosition, dailyFromAPI.dates),
-            highest_temps = doubleTemperaturesToString(checkAndReturnSublist(shift, endPosition,dailyFromAPI.maxTemperatures)),
-            lowest_temps = doubleTemperaturesToString(checkAndReturnSublist(shift, endPosition,dailyFromAPI.minTemperatures)),
-            weather_codes = checkAndReturnSublist(shift, endPosition, dailyFromAPI.weatherCodes)
+        val startPosition = 0
+        val endPosition = Constants.forecastDays
+        return WeatherDataDaily(
+            dates = checkAndReturnSublist(startPosition, endPosition, dailyFromAPI.dates),
+            highest_temps = doubleTemperaturesToString(checkAndReturnSublist(startPosition, endPosition,dailyFromAPI.maxTemperatures)),
+            lowest_temps = doubleTemperaturesToString(checkAndReturnSublist(startPosition, endPosition,dailyFromAPI.minTemperatures)),
+            weather_codes = checkAndReturnSublist(startPosition, endPosition, dailyFromAPI.weatherCodes)
         )
     }
 
@@ -75,6 +59,7 @@ class WeatherTypesMapper {
 
     private fun mapCurrent(currentFromAPI: CurrentWeatherDataDto): WeatherDataCurrent {
         return WeatherDataCurrent(
+            current_hour = TimeFormatter.getHourFromAPITimeString(currentFromAPI.time),
             temperature = "${currentFromAPI.temperature.toInt()}${Constants.degreeSign}",
             weather_code = currentFromAPI.weatherCode,
             wind_speed = currentFromAPI.windSpeed.toString()

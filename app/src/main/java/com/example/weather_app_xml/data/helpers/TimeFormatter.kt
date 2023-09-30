@@ -13,4 +13,9 @@ object TimeFormatter {
     fun getFormattedTimeForHourlyCard(to_format: String) : String {
         return LocalDateTime.parse(to_format, formatter).toLocalTime().toString()
     }
+
+    @Provides
+    fun getHourFromAPITimeString(api_string: String) : Int {
+        return LocalDateTime.parse(api_string, formatter).toLocalTime().hour
+    }
 }

@@ -73,7 +73,7 @@
             android:layout_height="15dp"
             android:layout_gravity="center"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/ic_launcher_foreground" />
+            android:background="@drawable/plus_icon" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

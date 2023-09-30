@@ -8,4 +8,5 @@
     <string name="button_daily">Daily</string>
     <string name="wind">Wind</string>
     <string name="km_h">km/h</string>
+    <string name="hourly_text">hourly forecast:</string>
 </resources>
